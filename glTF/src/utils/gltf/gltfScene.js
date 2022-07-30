@@ -112,26 +112,15 @@ export class gltfScene{
         //  sampler - какой семл с данными анимации использовать
         //  target - цель анимации // node и path - действие (перемешение маштаб поворот)
         if (this.animations){
-
-
-           // this.animations.channels           
-
-
+        
             this.animations.forEach((animation) => {
-            
-            animation.channels.forEach((channel) => {
-
-              
-
+               animation.channels.forEach((channel) => {
             });    
 
             animation.samplers.forEach((sampler) => {
               sampler.inputRAW = this.dataFromAccessors(sampler.input);
               sampler.outputRAW = this.dataFromAccessors(sampler.output);
             });
-
-
-
           });
         }
         

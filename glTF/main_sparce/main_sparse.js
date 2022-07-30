@@ -2,12 +2,10 @@
 //--------------------common--------------------------
 import * as INIT from "../../common/utils/utilsWebGL.js";
 import * as UTILS_SHADER from "../../common/utils/ShaderUtil.js";
-//import * as LOADERS from "../../common/utils/Loaders.js";
 import * as CAMERAS from "../../common/utils/Camera.js";
 import * as HELPERS_AXIS from"../../common/utils/helpers/Axis.js";
 import * as HELPERS_NORMAL  from "../../common/utils/helpers/VertexNormalsHelper.js";
 import * as glMatrix from "../../common/glm/index.js";
-//import * as LOADERS_OBJ from "../common/utils/objLoader.js";
 //------------------------------------------------------
 import * as GUI from "../src/utils/gui/guiSetting.js";
 import { gltfScene, _base64ToArrayBuffer } from "../src/utils/gltf/gltfScene.js";
@@ -47,8 +45,6 @@ async function main() {
   // Attrib
   let a_Position = gl.getAttribLocation(shaderProgram, "a_Position");
   gl.enableVertexAttribArray(a_Position);
-  // let a_uv = gl.getAttribLocation(shaderProgram, "a_uv");
-  // gl.enableVertexAttribArray(a_uv);
   // Uniform
   let u_Color = gl.getUniformLocation(shaderProgram, "u_Color");
   let u_mMatrix = gl.getUniformLocation(shaderProgram, "u_mMatrix");
@@ -62,17 +58,7 @@ async function main() {
   /**
    * LOADERS
    */
-  // let model = {
-  //   url: "../resource/model.json",
-  //   mesh: undefined,
-  // };
-
-  // gl.activeTexture(gl.TEXTURE0);
-  // await LOADERS.loadJSON(model, model.url);
-  // //console.log(model.mesh);
-
-  // const mainModel = model.mesh.meshes[0];
-
+ 
   gl.useProgram(shaderProgram);
   gl.useProgram(null);
 
@@ -82,23 +68,14 @@ async function main() {
   let glTF = await LoadJSONUsingPromise("../resource/gltf/sparse.gltf");
   let glTF_TREE = await new gltfScene(glTF);
   glTF_TREE.loadScene();
-  //  let base64STR =
-  //    "AAABAAIAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAACAPwAAAAA=";
-  //  let buffer = _base64ToArrayBuffer(base64STR);
-  //=============================================================
+   //=============================================================
   /**
    * BUFFER
    */
-  //var triangle_vertex = [0.0, 0.5, 0.0, -0.5, -0.5, 0.0, 0.5, -0.5, 0.0];
   gl.useProgram(shaderProgram);
   gl.bindVertexArray(vao);
   let TRIANGLE_VERTEX = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, TRIANGLE_VERTEX);
-  // gl.bufferData(
-  //   gl.ARRAY_BUFFER,
-  //   glTFinfo.models[0].bufferInfo_POSITION.data,
-  //   gl.STATIC_DRAW
-  // );
 
   gl.bufferData(
     gl.ARRAY_BUFFER,
@@ -107,13 +84,6 @@ async function main() {
     gl.STATIC_DRAW
   );
 
-  // let TRIANGLE_UV = gl.createBuffer();
-  // gl.bindBuffer(gl.ARRAY_BUFFER, TRIANGLE_UV);
-  // gl.bufferData(
-  //   gl.ARRAY_BUFFER,
-  //   new Float32Array(mainModel.texturecoords[0]),
-  //   gl.STATIC_DRAW
-  // );
 
   let TRIANGLE_FACES = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, TRIANGLE_FACES);
@@ -148,7 +118,7 @@ async function main() {
     [0.0, 0.0, 0.0],
     [0.0, 1.0, 0.0]
   );
-  //glMatrix.mat4.translate(MODELMATRIX, MODELMATRIX, [0.5, 1.0, 0.0]);
+  glMatrix.mat4.translate(MODELMATRIX, MODELMATRIX, [-3.0, -1.0, 0.0]);
 
   //=============================================================
   /**
@@ -174,23 +144,6 @@ async function main() {
   glMatrix.mat4.invert(NORMALMATRIX_HELPER, NORMALMATRIX_HELPER);
   glMatrix.mat4.transpose(NORMALMATRIX_HELPER, NORMALMATRIX_HELPER);
 
-  // let NormalHelpersVertex = HELPERS_NORMAL.normalHelperArray(
-  //   gl,
-  //   mainModel.vertices,
-  //   mainModel.normals,
-  //   NORMALMATRIX_HELPER,
-  //   MODELMATRIX
-  // );
-
-  // const VAO_normal_helpers = HELPERS_NORMAL.VertexNormalHelper(
-  //   gl,
-  //   shaderProgram_normalHelpers,
-  //   NormalHelpersVertex,
-  //   camera.pMatrix,
-  //   camera.vMatrix,
-  //   MODELMATRIX,
-  //   NORMALMATRIX_HELPER
-  // );
   /*========================= DRAWING ========================= */
   gl.clearColor(0.2, 0.8, 0.2, 1.0);
   gl.enable(gl.DEPTH_TEST);
@@ -200,8 +153,7 @@ async function main() {
   let old_time = 0.0;
   let input_time = 0;
   const animate = function (time) {
-    // FRAMEBUFFER
-    // gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    
     gl.clearColor(0.2, 0.2, 0.2, 1.0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
@@ -253,22 +205,21 @@ async function main() {
     /**
      * TEXTURE
      */
-    // if (texture.webGLtexture) {
-    //   gl.activeTexture(gl.TEXTURE0);
-    //   gl.bindTexture(gl.TEXTURE_2D, texture.webGLtexture);
-    //   gl.uniform1i(u_texture, 0);
-    // }
-
-    //gl.bindBuffer(gl.ARRAY_BUFFER, TRIANGLE_VERTEX);
-    //gl.drawArrays(gl.TRIANGLES, 0, model.mesh.meshes[0].vertices.length);
+ 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, TRIANGLE_FACES);
     gl.drawElements(
-      gl.TRIANGLES,
+      gl.LINE_STRIP,
       glTF_TREE.RAW_MeshesData[0].dataINDEX.accessors_DATA.count,
       gl.UNSIGNED_SHORT,
       0
     );
-    //gl.TRIANGLES,
+     gl.drawElements(
+       gl.POINTS,
+       glTF_TREE.RAW_MeshesData[0].dataINDEX.accessors_DATA.count,
+       gl.UNSIGNED_SHORT,
+       0
+     );
+    
     //=============================================================
     /**
      * HELPERS
@@ -281,17 +232,7 @@ async function main() {
 
     if (gui.axis) {
       HELPERS_AXIS.loadAxisHelper(gl, shaderProgram_axis, MATRIX);
-    }
-
-    // if (gui.normal) {
-    //   HELPERS_NORMAL.VertexNormalHelperDraw(
-    //     gl,
-    //     shaderProgram_normalHelpers,
-    //     VAO_normal_helpers,
-    //     MATRIX,
-    //     NormalHelpersVertex.flat().length / 3
-    //   );
-    // }
+    }    
 
     //=============================================================
     gl.flush();
