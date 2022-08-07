@@ -22,7 +22,7 @@ async function main() {
    * INIT
    */
   /** @type {HTMLCanvasElement} */
-  let canvas = await INIT.createCanvasGl(500, 500);
+  let canvas = await INIT.createCanvasGl(window.innerWidth, window.innerHeight); //await INIT.createCanvasGl(500, 500);
   /** @type {WebGLRenderingContext} */
   let gl = await INIT.initWebGL2(canvas);
   //=============================================================
@@ -88,7 +88,7 @@ async function main() {
   //console.log(glTFinfo)
   // let glTF = await LoadJSONUsingPromise("resource/gltf/minimal.gltf");
   // let glTF = await LoadJSONUsingPromise("resource/gltf/sparse.gltf");
-  
+
   let glTF = await LoadJSONUsingPromise("../resource/gltf/monky.gltf");
   //let glTF = await LoadJSONUsingPromise("resource/gltf/dog.gltf");
   let glTF_TREE = await new gltfScene(glTF);
@@ -257,8 +257,6 @@ async function main() {
     //   });
     // }
 
-
-
     //=============================================================
 
     gl.viewport(0.0, 0.0, canvas.width, canvas.height);
@@ -269,9 +267,9 @@ async function main() {
 
     //MATRIX
 
-   // glMatrix.mat4.rotateX(MODELMATRIX, MODELMATRIX, 0.01);
+    // glMatrix.mat4.rotateX(MODELMATRIX, MODELMATRIX, 0.01);
     glMatrix.mat4.rotateY(MODELMATRIX, MODELMATRIX, 0.01);
-   // glMatrix.mat4.rotateZ(MODELMATRIX, MODELMATRIX, 0.01);
+    // glMatrix.mat4.rotateZ(MODELMATRIX, MODELMATRIX, 0.01);
 
     MATRIXUniformData.set(MODELMATRIX, 0);
     MATRIXUniformData.set(camera.vMatrix, 16);

@@ -22,7 +22,7 @@ async function main() {
    */
 
   /** @type {HTMLCanvasElement} */
-  let canvas = await INIT.createCanvasGl(500, 500);
+  let canvas = await INIT.createCanvasGl(window.innerWidth, window.innerHeight); //await INIT.createCanvasGl(500, 500);
   /** @type {WebGLRenderingContext} */
   let gl = await INIT.initWebGL2(canvas);
   //=============================================================
@@ -72,26 +72,25 @@ async function main() {
   glTF_TREE.loadScene();
 
   // //NODES
-  glTF_TREE.RAW_nodesData.forEach(node => { 
-    //Если это мешь 
-    if(node.hasOwnProperty('mesh')){
-     // node.vao = gl.createVertexArray();
+  glTF_TREE.RAW_nodesData.forEach((node) => {
+    //Если это мешь
+    if (node.hasOwnProperty("mesh")) {
+      // node.vao = gl.createVertexArray();
       //gl.bindVertexArray(node.vao);
       gl.bindVertexArray(vao);
-      node.r_buffersMesh = loadMeshOnScene(gl,glTF_TREE, node.mesh);
+      node.r_buffersMesh = loadMeshOnScene(gl, glTF_TREE, node.mesh);
       gl.bindVertexArray(null);
     }
-     
-  });  
+  });
 
   //=============================================================
   /**
    * BUFFER
    */
- 
+
   gl.useProgram(shaderProgram);
   gl.bindVertexArray(vao);
-  
+
   let BUFFER_VERTEX = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, BUFFER_VERTEX);
 
@@ -110,8 +109,6 @@ async function main() {
     glTF_TREE.RAW_MeshesData[0].dataINDEX.buffer_DATA,
     gl.STATIC_DRAW
   );
-
-
 
   gl.bindVertexArray(null);
 
@@ -173,7 +170,6 @@ async function main() {
   let old_time = 0.0;
   let input_time = 0;
   const animate = function (time) {
-    
     gl.clearColor(0.2, 0.2, 0.2, 1.0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
@@ -209,48 +205,46 @@ async function main() {
     gl.useProgram(shaderProgram);
     gl.bindVertexArray(vao);
 
-    glTF_TREE.RAW_nodesData.forEach(node => {
-         
-        gl.bindBuffer(gl.ARRAY_BUFFER, node.r_buffersMesh.BUFFER_VERTEX);
-        gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
-        gl.uniform3fv(u_Color, [0.9, 0.5, 0.2]);
+    glTF_TREE.RAW_nodesData.forEach((node) => {
+      gl.bindBuffer(gl.ARRAY_BUFFER, node.r_buffersMesh.BUFFER_VERTEX);
+      gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
+      gl.uniform3fv(u_Color, [0.9, 0.5, 0.2]);
 
-        //MATRIX
-        glMatrix.mat4.identity(MODELMATRIX); 
-        if(node.hasOwnProperty('translation')){
-          glMatrix.mat4.translate(MODELMATRIX, MODELMATRIX, node.translation); 
-        }
-        if (node.hasOwnProperty("rotation")) {
-          let TEMP_MATRIX = glMatrix.mat4.create();
-           let TEMP_quat = glMatrix.quat.create();
-           glMatrix.quat.set(
-             TEMP_quat,
-             node.rotation[0],
-             node.rotation[1],
-             node.rotation[2],
-             node.rotation[3]
-           );
-          
-          glMatrix.mat4.fromQuat(TEMP_MATRIX, TEMP_quat);
-           glMatrix.mat4.multiply(MODELMATRIX, MODELMATRIX, TEMP_MATRIX);
-        }
-        if (node.hasOwnProperty("scale")) {
-            glMatrix.mat4.scale(MODELMATRIX, MODELMATRIX, node.scale);
-        }
+      //MATRIX
+      glMatrix.mat4.identity(MODELMATRIX);
+      if (node.hasOwnProperty("translation")) {
+        glMatrix.mat4.translate(MODELMATRIX, MODELMATRIX, node.translation);
+      }
+      if (node.hasOwnProperty("rotation")) {
+        let TEMP_MATRIX = glMatrix.mat4.create();
+        let TEMP_quat = glMatrix.quat.create();
+        glMatrix.quat.set(
+          TEMP_quat,
+          node.rotation[0],
+          node.rotation[1],
+          node.rotation[2],
+          node.rotation[3]
+        );
 
-        gl.uniformMatrix4fv(u_mMatrix, false, MODELMATRIX);
-        gl.uniformMatrix4fv(u_vMatrix, false, camera.vMatrix);
-        gl.uniformMatrix4fv(u_pMatrix, false, camera.pMatrix);
+        glMatrix.mat4.fromQuat(TEMP_MATRIX, TEMP_quat);
+        glMatrix.mat4.multiply(MODELMATRIX, MODELMATRIX, TEMP_MATRIX);
+      }
+      if (node.hasOwnProperty("scale")) {
+        glMatrix.mat4.scale(MODELMATRIX, MODELMATRIX, node.scale);
+      }
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, node.r_buffersMesh.BUFFER_FACES);
-        gl.drawElements(
+      gl.uniformMatrix4fv(u_mMatrix, false, MODELMATRIX);
+      gl.uniformMatrix4fv(u_vMatrix, false, camera.vMatrix);
+      gl.uniformMatrix4fv(u_pMatrix, false, camera.pMatrix);
+
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, node.r_buffersMesh.BUFFER_FACES);
+      gl.drawElements(
         gl.TRIANGLES,
         glTF_TREE.RAW_MeshesData[0].dataINDEX.accessors_DATA.count,
         gl.UNSIGNED_SHORT,
         0
-        ); 
-                
-    })
+      );
+    });
 
     gl.bindVertexArray(null);
     //=============================================================

@@ -22,7 +22,7 @@ async function main() {
    */
 
   /** @type {HTMLCanvasElement} */
-  let canvas = await INIT.createCanvasGl(500, 500);
+  let canvas = await INIT.createCanvasGl(window.innerWidth, window.innerHeight); //await INIT.createCanvasGl(500, 500);
   /** @type {WebGLRenderingContext} */
   let gl = await INIT.initWebGL2(canvas);
   //=============================================================
@@ -141,8 +141,8 @@ async function main() {
   /**
    * CAMERA
    */
-  let cameras =[];
-   glTF_TREE.RAW_nodesData.forEach((node) => {
+  let cameras = [];
+  glTF_TREE.RAW_nodesData.forEach((node) => {
     if (node.hasOwnProperty("camera")) {
       node.props = glTF_TREE.cameras[node.camera];
 
@@ -193,7 +193,6 @@ async function main() {
     let dT = time - old_time;
     old_time = time;
 
-
     camera = cameras[gui.cameraindex];
     //  /**
     //  * AMINATION
@@ -222,7 +221,6 @@ async function main() {
     gl.bindVertexArray(vao);
 
     glTF_TREE.RAW_nodesData.forEach((node) => {
-    
       if (node.hasOwnProperty("mesh")) {
         gl.bindBuffer(gl.ARRAY_BUFFER, node.r_buffersMesh.BUFFER_VERTEX);
         gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
@@ -262,13 +260,12 @@ async function main() {
           gl.UNSIGNED_SHORT,
           0
         );
-      }else if(node.hasOwnProperty("camera")){
-          glMatrix.mat4.identity(VIEWMATRIX);
-          if (node.hasOwnProperty("translation")) {
-            glMatrix.mat4.scale(VIEWMATRIX, VIEWMATRIX, node.translation);
-          }
+      } else if (node.hasOwnProperty("camera")) {
+        glMatrix.mat4.identity(VIEWMATRIX);
+        if (node.hasOwnProperty("translation")) {
+          glMatrix.mat4.scale(VIEWMATRIX, VIEWMATRIX, node.translation);
+        }
       }
-
     });
 
     gl.bindVertexArray(null);

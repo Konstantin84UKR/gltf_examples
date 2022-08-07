@@ -21,7 +21,7 @@ async function main() {
    */
 
   /** @type {HTMLCanvasElement} */
-  let canvas = await INIT.createCanvasGl(500, 500);
+  let canvas = await INIT.createCanvasGl(window.innerWidth, window.innerHeight); //await INIT.createCanvasGl(500, 500);
   /** @type {WebGLRenderingContext} */
   let gl = await INIT.initWebGL2(canvas);
   //=============================================================
@@ -58,7 +58,7 @@ async function main() {
   /**
    * LOADERS
    */
- 
+
   gl.useProgram(shaderProgram);
   gl.useProgram(null);
 
@@ -68,7 +68,7 @@ async function main() {
   let glTF = await LoadJSONUsingPromise("../resource/gltf/sparse.gltf");
   let glTF_TREE = await new gltfScene(glTF);
   glTF_TREE.loadScene();
-   //=============================================================
+  //=============================================================
   /**
    * BUFFER
    */
@@ -83,7 +83,6 @@ async function main() {
     glTF_TREE.RAW_MeshesData[0].dataPOSITION.buffer_DATA,
     gl.STATIC_DRAW
   );
-
 
   let TRIANGLE_FACES = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, TRIANGLE_FACES);
@@ -153,7 +152,6 @@ async function main() {
   let old_time = 0.0;
   let input_time = 0;
   const animate = function (time) {
-    
     gl.clearColor(0.2, 0.2, 0.2, 1.0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
@@ -205,7 +203,7 @@ async function main() {
     /**
      * TEXTURE
      */
- 
+
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, TRIANGLE_FACES);
     gl.drawElements(
       gl.LINE_STRIP,
@@ -213,13 +211,13 @@ async function main() {
       gl.UNSIGNED_SHORT,
       0
     );
-     gl.drawElements(
-       gl.POINTS,
-       glTF_TREE.RAW_MeshesData[0].dataINDEX.accessors_DATA.count,
-       gl.UNSIGNED_SHORT,
-       0
-     );
-    
+    gl.drawElements(
+      gl.POINTS,
+      glTF_TREE.RAW_MeshesData[0].dataINDEX.accessors_DATA.count,
+      gl.UNSIGNED_SHORT,
+      0
+    );
+
     //=============================================================
     /**
      * HELPERS
@@ -232,7 +230,7 @@ async function main() {
 
     if (gui.axis) {
       HELPERS_AXIS.loadAxisHelper(gl, shaderProgram_axis, MATRIX);
-    }    
+    }
 
     //=============================================================
     gl.flush();

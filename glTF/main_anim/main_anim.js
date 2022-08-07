@@ -22,7 +22,7 @@ async function main() {
    */
 
   /** @type {HTMLCanvasElement} */
-  let canvas = await INIT.createCanvasGl(500, 500);
+  let canvas = await INIT.createCanvasGl(window.innerWidth, window.innerHeight); //await INIT.createCanvasGl(500, 500);
   /** @type {WebGLRenderingContext} */
   let gl = await INIT.initWebGL2(canvas);
   //=============================================================
@@ -70,7 +70,7 @@ async function main() {
   /**
    * BUFFER
    */
- 
+
   gl.useProgram(shaderProgram);
   gl.bindVertexArray(vao);
   let TRIANGLE_VERTEX = gl.createBuffer();
@@ -116,7 +116,7 @@ async function main() {
     [0.0, 0.0, 0.0],
     [0.0, 1.0, 0.0]
   );
-  
+
   //=============================================================
   /**
    * CAMERA
@@ -150,7 +150,6 @@ async function main() {
   let old_time = 0.0;
   let input_time = 0;
   const animate = function (time) {
-    
     gl.clearColor(0.2, 0.2, 0.2, 1.0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);

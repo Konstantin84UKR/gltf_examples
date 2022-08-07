@@ -21,7 +21,7 @@ async function main() {
    */
 
   /** @type {HTMLCanvasElement} */
-  let canvas = await INIT.createCanvasGl(500, 500);
+  let canvas = await INIT.createCanvasGl(window.innerWidth, window.innerHeight); //await INIT.createCanvasGl(500, 500);
   /** @type {WebGLRenderingContext} */
   let gl = await INIT.initWebGL2(canvas);
   //=============================================================
@@ -194,27 +194,26 @@ async function main() {
     //  * AMINATION
     //  */
     let morpth = [];
-   
+
     if (glTF_TREE.animations) {
       glTF_TREE.animations.forEach((animation) => {
         //  animation.channels.forEach((channel) => {
         //   channel.
         //  });
 
-          morpth = glTF_TREE.animationMorpth(
-            animation.channels[0],
-            0,
-            time,
-            gui.animationScale
-          );          
-
+        morpth = glTF_TREE.animationMorpth(
+          animation.channels[0],
+          0,
+          time,
+          gui.animationScale
+        );
       });
     }
 
     let weights = glTF_TREE.meshes[0].weights;
-      //=============================================================
+    //=============================================================
 
-      gl.viewport(0.0, 0.0, canvas.width, canvas.height);
+    gl.viewport(0.0, 0.0, canvas.width, canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     gl.useProgram(shaderProgram);
@@ -236,11 +235,11 @@ async function main() {
     gl.vertexAttribPointer(a_Position_1, 3, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, TRIANGLE_VERTEX_2);
     gl.vertexAttribPointer(a_Position_2, 3, gl.FLOAT, false, 0, 0);
-    
+
     gl.uniform3fv(u_Color, [0.9, 0.5, 0.2]);
     gl.uniform2fv(u_morpth, morpth);
     gl.uniform2fv(u_weights, weights);
-       // gl.uniform1f(u_interpolationValue, interpolationValue);
+    // gl.uniform1f(u_interpolationValue, interpolationValue);
 
     /**
      * TEXTURE

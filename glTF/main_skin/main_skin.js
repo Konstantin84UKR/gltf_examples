@@ -21,7 +21,7 @@ async function main() {
    */
 
   /** @type {HTMLCanvasElement} */
-  let canvas = await INIT.createCanvasGl(500, 500);
+  let canvas = await INIT.createCanvasGl(window.innerWidth, window.innerHeight); //await INIT.createCanvasGl(500, 500);
   /** @type {WebGLRenderingContext} */
   let gl = await INIT.initWebGL2(canvas);
   //=============================================================
@@ -39,11 +39,11 @@ async function main() {
     "../src/shaders/fs_skin.glsl"
   );
 
-    const shaderProgramEASY = await UTILS_SHADER.createPromiseShaderProgram(
-      gl,
-      "../src/shaders/vs_easy.glsl",
-      "../src/shaders/fs_easy.glsl"
-    );
+  const shaderProgramEASY = await UTILS_SHADER.createPromiseShaderProgram(
+    gl,
+    "../src/shaders/vs_easy.glsl",
+    "../src/shaders/fs_easy.glsl"
+  );
 
   gl.useProgram(shaderProgram);
   let vao = gl.createVertexArray();
@@ -70,20 +70,14 @@ async function main() {
 
   gl.useProgram(null);
 
-
   gl.useProgram(shaderProgramEASY);
-    let u_Color_easy = gl.getUniformLocation(shaderProgramEASY, "u_Color");
-    let u_mMatrix_easy = gl.getUniformLocation(shaderProgramEASY, "u_mMatrix");
-    let u_vMatrix_easy = gl.getUniformLocation(shaderProgramEASY, "u_vMatrix");
-    let u_pMatrix_easy = gl.getUniformLocation(shaderProgramEASY, "u_pMatrix");
+  let u_Color_easy = gl.getUniformLocation(shaderProgramEASY, "u_Color");
+  let u_mMatrix_easy = gl.getUniformLocation(shaderProgramEASY, "u_mMatrix");
+  let u_vMatrix_easy = gl.getUniformLocation(shaderProgramEASY, "u_vMatrix");
+  let u_pMatrix_easy = gl.getUniformLocation(shaderProgramEASY, "u_pMatrix");
 
-      let a_Position_easy = gl.getAttribLocation(
-        shaderProgramEASY,
-        "a_Position"
-      );
-      gl.enableVertexAttribArray(a_Position_easy);
-
-
+  let a_Position_easy = gl.getAttribLocation(shaderProgramEASY, "a_Position");
+  gl.enableVertexAttribArray(a_Position_easy);
 
   gl.useProgram(null);
 
@@ -111,77 +105,73 @@ async function main() {
 
   glTF_TREE.nodes.forEach((node) => {
     if (node.hasOwnProperty("mesh")) {
-       let itemMesh = glTF_TREE.RAW_MeshesData[node.mesh];
-       for (let meshData in itemMesh) {
-         switch (meshData) {
-           case "dataPOSITION":
-             itemMesh.dataPOSITION.TRIANGLE_VERTEX = gl.createBuffer();
-             gl.bindBuffer(
-               gl.ARRAY_BUFFER,
-               itemMesh.dataPOSITION.TRIANGLE_VERTEX
-             );
+      let itemMesh = glTF_TREE.RAW_MeshesData[node.mesh];
+      for (let meshData in itemMesh) {
+        switch (meshData) {
+          case "dataPOSITION":
+            itemMesh.dataPOSITION.TRIANGLE_VERTEX = gl.createBuffer();
+            gl.bindBuffer(
+              gl.ARRAY_BUFFER,
+              itemMesh.dataPOSITION.TRIANGLE_VERTEX
+            );
 
-             gl.bufferData(
-               gl.ARRAY_BUFFER,
-               itemMesh.dataPOSITION.buffer_DATA,
-               gl.STATIC_DRAW
-             );
-             break;
-           case "dataINDEX":
-             itemMesh.dataINDEXTRIANGLE_FACES = gl.createBuffer();
-             gl.bindBuffer(
-               gl.ELEMENT_ARRAY_BUFFER,
-               itemMesh.dataINDEXTRIANGLE_FACES
-             );
-             gl.bufferData(
-               gl.ELEMENT_ARRAY_BUFFER,
-               itemMesh.dataINDEX.buffer_DATA,
-               gl.STATIC_DRAW
-             );
-             break;
-           case "dataJOINTS_0":
-             
-           let test = new Uint16Array([
-             0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
-             0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0
-           ]);
-           
-             itemMesh.dataJOINTS_0.Buffer = gl.createBuffer();
-             gl.bindBuffer(gl.ARRAY_BUFFER, itemMesh.dataJOINTS_0.Buffer);
-             gl.bufferData(
-               gl.ARRAY_BUFFER,
+            gl.bufferData(
+              gl.ARRAY_BUFFER,
+              itemMesh.dataPOSITION.buffer_DATA,
+              gl.STATIC_DRAW
+            );
+            break;
+          case "dataINDEX":
+            itemMesh.dataINDEXTRIANGLE_FACES = gl.createBuffer();
+            gl.bindBuffer(
+              gl.ELEMENT_ARRAY_BUFFER,
+              itemMesh.dataINDEXTRIANGLE_FACES
+            );
+            gl.bufferData(
+              gl.ELEMENT_ARRAY_BUFFER,
+              itemMesh.dataINDEX.buffer_DATA,
+              gl.STATIC_DRAW
+            );
+            break;
+          case "dataJOINTS_0":
+            let test = new Uint16Array([
+              0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
+              0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+            ]);
+
+            itemMesh.dataJOINTS_0.Buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, itemMesh.dataJOINTS_0.Buffer);
+            gl.bufferData(
+              gl.ARRAY_BUFFER,
               itemMesh.dataJOINTS_0.buffer_DATA,
               //test,
-               gl.STATIC_DRAW
-             );
-             break;
-           case "dataWEIGHTS_0":
-             itemMesh.dataWEIGHTS_0.Buffer = gl.createBuffer();
-             gl.bindBuffer(gl.ARRAY_BUFFER, itemMesh.dataWEIGHTS_0.Buffer);
-             gl.bufferData(
-               gl.ARRAY_BUFFER,
-               itemMesh.dataWEIGHTS_0.buffer_DATA,
-               gl.STATIC_DRAW
-             );
-             break;
-         }
-       };
-  
+              gl.STATIC_DRAW
+            );
+            break;
+          case "dataWEIGHTS_0":
+            itemMesh.dataWEIGHTS_0.Buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, itemMesh.dataWEIGHTS_0.Buffer);
+            gl.bufferData(
+              gl.ARRAY_BUFFER,
+              itemMesh.dataWEIGHTS_0.buffer_DATA,
+              gl.STATIC_DRAW
+            );
+            break;
+        }
+      }
     }
 
     if (node.hasOwnProperty("skin")) {
-       
-       glTF_TREE.joints = glTF_TREE.skins[node.skin].joints;
-       glTF_TREE.bones = [];
-       glTF_TREE.skins[node.skin].joints.forEach(element => {
-          glTF_TREE.bones.push(glTF_TREE.nodes[element]);
-       });
-      
-       glTF_TREE.bones.forEach((bone) => {        
-        
+      glTF_TREE.joints = glTF_TREE.skins[node.skin].joints;
+      glTF_TREE.bones = [];
+      glTF_TREE.skins[node.skin].joints.forEach((element) => {
+        glTF_TREE.bones.push(glTF_TREE.nodes[element]);
+      });
+
+      glTF_TREE.bones.forEach((bone) => {
         bone.matrixWorld = glMatrix.mat4.create();
         bone.matrixModel = glMatrix.mat4.create();
-      
+
         if (bone.hasOwnProperty("translation")) {
           glMatrix.mat4.translate(
             bone.matrixWorld,
@@ -190,8 +180,7 @@ async function main() {
           );
         }
 
-         if (bone.hasOwnProperty("rotation")) {
-
+        if (bone.hasOwnProperty("rotation")) {
           let qTemp = glMatrix.mat4.create();
           glMatrix.quat.set(
             qTemp,
@@ -200,36 +189,36 @@ async function main() {
             bone.rotation[2],
             bone.rotation[3]
           );
-          let rTemp =  glMatrix.mat4.create();
+          let rTemp = glMatrix.mat4.create();
           glMatrix.mat4.fromQuat(rTemp, qTemp);
 
-           glMatrix.mat4.mul(bone.matrixWorld, bone.matrixWorld, rTemp);
-         }
-
-
-
+          glMatrix.mat4.mul(bone.matrixWorld, bone.matrixWorld, rTemp);
+        }
       });
 
-       glTF_TREE.inverseBindMatrices = glTF_TREE.skins[node.skin].datainverseBindMatrices;
-       
+      glTF_TREE.inverseBindMatrices =
+        glTF_TREE.skins[node.skin].datainverseBindMatrices;
     }
     if (node.hasOwnProperty("children")) {
       let f = 5;
     }
     if (node.hasOwnProperty("translation")) {
-       let f = 5;
+      let f = 5;
     }
     if (node.hasOwnProperty("rotation")) {
-       let f = 5;
+      let f = 5;
     }
   });
 
   gl.bindVertexArray(null);
 
-
   let EASY_VERTEX = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, EASY_VERTEX);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0,0,0,0,1,0]), gl.STATIC_DRAW);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([0, 0, 0, 0, 1, 0]),
+    gl.STATIC_DRAW
+  );
 
   //=============================================================
   /**
@@ -243,10 +232,8 @@ async function main() {
 
   let JOINTMATRIX = new Float32Array(32);
   let temp = glMatrix.mat4.create();
-  JOINTMATRIX.set(temp ,0);
+  JOINTMATRIX.set(temp, 0);
   JOINTMATRIX.set(temp, 16);
-
-  
 
   glMatrix.mat4.identity(PROJMATRIX);
   let fovy = (40 * Math.PI) / 180;
@@ -264,7 +251,7 @@ async function main() {
     [0.0, 1.0, 0.0]
   );
   //glMatrix.mat4.translate(MODELMATRIX, MODELMATRIX, [0.5, 1.0, 0.0]);
-  let JOINTMATRIX_INV = []; 
+  let JOINTMATRIX_INV = [];
   let tempMat4_1 = glMatrix.mat4.create();
   glMatrix.mat4.set(
     tempMat4_1,
@@ -277,7 +264,7 @@ async function main() {
     tempMat4_2,
     ...glTF_TREE.inverseBindMatrices.buffer_DATA.slice(16 * 1, 16 * 1 + 16)
   );
-  JOINTMATRIX_INV.push(tempMat4_2);            
+  JOINTMATRIX_INV.push(tempMat4_2);
   //=============================================================
   /**
    * CAMERA
@@ -359,22 +346,21 @@ async function main() {
     //==================SKIN====================================
     gl.useProgram(shaderProgramEASY);
     let index = 0;
-     let TempMatrix = glMatrix.mat4.create();
+    let TempMatrix = glMatrix.mat4.create();
     glTF_TREE.bones.forEach((bone) => {
       if (index == 1) {
         glMatrix.mat4.identity(TempMatrix);
-     
+
         glMatrix.mat4.mul(TempMatrix, bone.matrixWorld, MODELMATRIX_EASY);
         glMatrix.mat4.mul(TempMatrix, TempMatrix, JOINTMATRIX_INV[index]);
-        glMatrix.mat4.mul(bone.matrixModel, TempMatrix, bone.matrixWorld); 
+        glMatrix.mat4.mul(bone.matrixModel, TempMatrix, bone.matrixWorld);
 
         JOINTMATRIX.set(TempMatrix, 16);
         // JOINTMATRIX.set(TempMatrix, 0);
-      }else if (index == 0){
+      } else if (index == 0) {
         glMatrix.mat4.identity(TempMatrix);
         JOINTMATRIX.set(TempMatrix, 0);
-      } 
-       
+      }
 
       gl.uniformMatrix4fv(u_mMatrix_easy, false, bone.matrixModel);
       gl.uniformMatrix4fv(u_vMatrix_easy, false, camera.vMatrix);
@@ -451,7 +437,7 @@ async function main() {
         );
       }
     });
-    
+
     // //=============================================================
     /**
      * HELPERS
