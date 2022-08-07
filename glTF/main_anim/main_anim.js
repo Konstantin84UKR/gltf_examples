@@ -46,8 +46,6 @@ async function main() {
   // Attrib
   let a_Position = gl.getAttribLocation(shaderProgram, "a_Position");
   gl.enableVertexAttribArray(a_Position);
-  // let a_uv = gl.getAttribLocation(shaderProgram, "a_uv");
-  // gl.enableVertexAttribArray(a_uv);
   // Uniform
   let u_Color = gl.getUniformLocation(shaderProgram, "u_Color");
   let u_mMatrix = gl.getUniformLocation(shaderProgram, "u_mMatrix");
@@ -55,8 +53,6 @@ async function main() {
   let u_pMatrix = gl.getUniformLocation(shaderProgram, "u_pMatrix");
   var u_texture = gl.getUniformLocation(shaderProgram, "u_texture");
   gl.bindVertexArray(null);
-
-  //gl.bindVertexArray(null);
   //=============================================================
   /**
    * LOADERS
@@ -120,8 +116,7 @@ async function main() {
     [0.0, 0.0, 0.0],
     [0.0, 1.0, 0.0]
   );
-  //glMatrix.mat4.translate(MODELMATRIX, MODELMATRIX, [0.5, 1.0, 0.0]);
-
+  
   //=============================================================
   /**
    * CAMERA
