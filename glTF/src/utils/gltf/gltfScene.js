@@ -135,26 +135,22 @@ export class gltfScene{
 
       if (this.skins) { 
 
-
-
+          this.skins.forEach((skin) => {
+                      for (let skinProps in skin)
+                      {
+                          switch (skinProps) {
+                            case "inverseBindMatrices":
+                              skin.datainverseBindMatrices = this.dataFromAccessors(
+                                skin.inverseBindMatrices
+                              );
+                              break;
+                            case "joints":
+                              skin.datajoints = skin.joints;
+                              break;  
+                              default:
+                              break;}}});
       }
        
-        this.skins.forEach((skin) => {
-            for (let skinProps in skin)
-            {
-                switch (skinProps) {
-                  case "inverseBindMatrices":
-                    skin.datainverseBindMatrices = this.dataFromAccessors(
-                      skin.inverseBindMatrices
-                    );
-                    break;
-                  case "joints":
-                    skin.datajoints = skin.joints;
-                    break;  
-                    default:
-                    break;}}});
-      
-
     }
   
     dataFromAccessors(index_of_accessor) {
