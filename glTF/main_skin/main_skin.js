@@ -134,17 +134,11 @@ async function main() {
             );
             break;
           case "dataJOINTS_0":
-            let test = new Uint16Array([
-              0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
-              0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
-            ]);
-
             itemMesh.dataJOINTS_0.Buffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, itemMesh.dataJOINTS_0.Buffer);
             gl.bufferData(
               gl.ARRAY_BUFFER,
               itemMesh.dataJOINTS_0.buffer_DATA,
-              //test,
               gl.STATIC_DRAW
             );
             break;
@@ -216,7 +210,18 @@ async function main() {
   gl.bindBuffer(gl.ARRAY_BUFFER, EASY_VERTEX);
   gl.bufferData(
     gl.ARRAY_BUFFER,
-    new Float32Array([0, 0, 0, 0, 1, 0]),
+    new Float32Array([
+      0, 0, 0, 
+      0, 1, 0,
+      0, 0, 0,
+     -0.1, 0.3,
+      0, 0, 0,
+      0, 0.1, 0.3,
+      0, 0.1, 0.3,
+      0, 0, 1,
+      0, -0.1, 0.3,
+      0, 0, 1, 0,
+    ]),
     gl.STATIC_DRAW
   );
 
@@ -361,16 +366,16 @@ async function main() {
         glMatrix.mat4.identity(TempMatrix);
         JOINTMATRIX.set(TempMatrix, 0);
       }
-
+      
       gl.uniformMatrix4fv(u_mMatrix_easy, false, bone.matrixModel);
       gl.uniformMatrix4fv(u_vMatrix_easy, false, camera.vMatrix);
       gl.uniformMatrix4fv(u_pMatrix_easy, false, camera.pMatrix);
-      gl.uniform3fv(u_Color_easy, [0.0, 0.0, 0.9]);
+      gl.uniform3fv(u_Color_easy, [0.9, 0.9, 0.0]);
       gl.bindBuffer(gl.ARRAY_BUFFER, EASY_VERTEX);
       gl.vertexAttribPointer(a_Position_easy, 3, gl.FLOAT, false, 0, 0);
       gl.drawArrays(gl.POINTS, 0, 1);
-      gl.uniform3fv(u_Color_easy, [0.9, 0.0, 0.9]);
-      gl.drawArrays(gl.LINES, 0, 2);
+      gl.uniform3fv(u_Color_easy, [0.5, 0.5, 0.9]);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 10);
       index++;
     });
 
@@ -422,13 +427,21 @@ async function main() {
           gl.ELEMENT_ARRAY_BUFFER,
           glTF_TREE.RAW_MeshesData[node.mesh].dataINDEXTRIANGLE_FACES
         );
+        // gl.uniform3fv(u_Color, [0.4, 0.4, 0.4]);
+        //  gl.drawElements(
+        //    gl.TRIANGLES,
+        //    glTF_TREE.RAW_MeshesData[node.mesh].dataINDEX.accessors_DATA.count,
+        //    gl.UNSIGNED_SHORT,
+        //    0
+        //  );
+        gl.uniform3fv(u_Color, [0.9, 0.4, 0.2]);
         gl.drawElements(
           gl.LINE_STRIP,
           glTF_TREE.RAW_MeshesData[node.mesh].dataINDEX.accessors_DATA.count,
           gl.UNSIGNED_SHORT,
           0
         );
-        gl.uniform3fv(u_Color, [0.5, 0.9, 0.2]);
+        gl.uniform3fv(u_Color, [0.4, 0.9, 0.2]);
         gl.drawElements(
           gl.POINTS,
           glTF_TREE.RAW_MeshesData[node.mesh].dataINDEX.accessors_DATA.count,

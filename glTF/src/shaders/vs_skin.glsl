@@ -11,7 +11,7 @@
 
          void main()
           {
-           gl_PointSize = 8.0;
+           gl_PointSize = 6.0;
            
       //   //   vec3 Position = a_Position + (u_weights[0]*u_morpth[0]*a_Position_1) + (u_weights[1]*u_morpth[1] * a_Position_2);
            // gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_Position,1.0);
