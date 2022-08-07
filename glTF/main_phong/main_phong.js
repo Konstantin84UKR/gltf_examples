@@ -22,7 +22,7 @@ async function main() {
    * INIT
    */
   /** @type {HTMLCanvasElement} */
-  let canvas = await INIT.createCanvasGl(window.innerWidth, window.innerHeight); //await INIT.createCanvasGl(500, 500);
+  let canvas = await INIT.createCanvasGl(500, 500);
   /** @type {WebGLRenderingContext} */
   let gl = await INIT.initWebGL2(canvas);
   //=============================================================
