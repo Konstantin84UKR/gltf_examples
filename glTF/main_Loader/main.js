@@ -113,7 +113,7 @@ async function main() {
   // let glTF = await LoadJSONUsingPromise("../resource/gltf/simple_Meshes.gltf");
   // let glTF = await LoadJSONUsingPromise("../resource/gltf/killer_whale/orca.gltf");
   // let glTF = await LoadJSONUsingPromise("../resource/gltf/skin.gltf");
-  // let glTF = await LoadJSONUsingPromise("../resource/gltf/fox.gltf");
+  let glTF = await LoadJSONUsingPromise("../resource/gltf/fox.gltf");
   let glTF_TREE = await new gltfScene(glTF);
   glTF_TREE.loadScene();
   //  let base64STR =
