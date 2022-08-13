@@ -72,14 +72,14 @@ async function main() {
   glTF_TREE.loadScene();
 
   // //NODES
-  glTF_TREE.RAW_nodesData.forEach((node) => {
+  glTF_TREE.nodes.forEach((node) => {
     //Если это мешь
     if (node.hasOwnProperty("mesh")) {
       // node.vao = gl.createVertexArray();
       //gl.bindVertexArray(node.vao);
       gl.bindVertexArray(vao);
       node.r_buffersMesh = loadMeshOnScene(gl, glTF_TREE, node.mesh);
-      gl.bindVertexArray(null);
+      gl.bindVertexArray(null); 
     }
   });
 
@@ -205,7 +205,7 @@ async function main() {
     gl.useProgram(shaderProgram);
     gl.bindVertexArray(vao);
 
-    glTF_TREE.RAW_nodesData.forEach((node) => {
+    glTF_TREE.nodes.forEach((node) => {
       gl.bindBuffer(gl.ARRAY_BUFFER, node.r_buffersMesh.BUFFER_VERTEX);
       gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
       gl.uniform3fv(u_Color, [0.9, 0.5, 0.2]);

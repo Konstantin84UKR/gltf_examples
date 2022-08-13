@@ -29,7 +29,7 @@ export function myGUI(gl) {
   gui.add(settingGUI, "normal");
   gui.add(settingGUI, "axis");
 
-  gui.add(settingGUI, "animationScale").min(0.5).max(5.0).step(0.01);
+  gui.add(settingGUI, "animationScale").min(0.1).max(5.0).step(0.01);
 
   const camera = gui.addFolder("camera");
   camera.add(settingGUI, "cameraReset");

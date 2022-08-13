@@ -1,10 +1,11 @@
 
 import * as glMatrix from  "../../glm/index.js";
+import { NodeGLTF } from "../../utils/gltf/NodeGlTF.js";
 
 export class gltfScene{
     constructor(gltf){
       
-        this.gltf = JSON.parse(gltf);;
+        this.gltf = JSON.parse(gltf);
         this.nodes = this.gltf.nodes;
         this.meshes = this.gltf.meshes;
         this.cameras = this.gltf.cameras;
@@ -17,25 +18,32 @@ export class gltfScene{
         this.RAW_MeshesData = [];
         this.RAW_nodesData = [];
 
+         this.NodeGLTFarr = [];  
+
     }
+
+
+    loadMesh(){
+      this.meshes.forEach((meshe) => {
+
+      });
+    }
+
 
     loadScene(){
       // let nodesData = [];
-      this.nodes.forEach((node) => {
-        // let nodeData = {};
-
-        // for (let key in node) {
-        //   nodeData[key] = node[key];
-        // }
-
-        // this.RAW_nodesData.push(node);
+      this.nodes.forEach((node, index) => {
+        node.index = index;
+        let nodeInst = new NodeGLTF(node);
+        this.NodeGLTFarr.push(nodeInst);
       });
 
       //MESH Перебираем весь меш в сцене
       let meshes = [];
       let skins = [];
-      for (let index = 0; index < this.meshes.length; index++) {
-        let mesh = this.meshes[index];
+      this.meshes.forEach((mesh) => {
+      // for (let index = 0; index < this.meshes.length; index++) {
+      //   let mesh = this.meshes[index];
 
         //Для каждого меша выбираем данные по примитивам Атрибутты и индексы.
         mesh.primitives.forEach((primitive) => {
@@ -104,8 +112,8 @@ export class gltfScene{
         });
 
         meshes.push(mesh);
-      }
-      this.RAW_MeshesData = meshes;
+      })
+     // this.RAW_MeshesData = meshes;
 
       //AMINATION
       //  samplers данные анимации

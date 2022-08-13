@@ -26,3 +26,19 @@ v_vertPos = (uMatrix.u_Mmatrix * vec4(a_Position, 1.0)).xyz;
 gl_Position = uMatrix.u_Pmatrix * uMatrix.u_Vmatrix * uMatrix.u_Mmatrix * vec4(a_Position, 1.0);
 
 }
+
+//   var shader_vertex_source = "\n\
+// attribute vec3 position;\n\
+// attribute vec2 uv;\n\
+// attribute vec3 normal;\n\
+// uniform mat4 Pmatrix, Vmatrix, Mmatrix;\n\
+// varying vec2 vUV;\n\
+// varying vec3 vNormal;\n\
+// varying vec3 vView;\n\
+// \n\
+// void main(void) {\n\
+// gl_Position = Pmatrix * Vmatrix * Mmatrix * vec4(position, 1.);\n\
+// vNormal  =vec3(Mmatrix*vec4(normal, 0.));\n\
+// vView = vec3(Vmatrix * Mmatrix * vec4(position, 1.));\n\
+// vUV = uv;\n\
+// }";

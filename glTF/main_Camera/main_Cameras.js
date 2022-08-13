@@ -72,7 +72,7 @@ async function main() {
   glTF_TREE.loadScene();
 
   // //NODES
-  glTF_TREE.RAW_nodesData.forEach((node) => {
+  glTF_TREE.nodes.forEach((node) => {
     //Если это мешь
     if (node.hasOwnProperty("mesh")) {
       // node.vao = gl.createVertexArray();
@@ -142,7 +142,7 @@ async function main() {
    * CAMERA
    */
   let cameras = [];
-  glTF_TREE.RAW_nodesData.forEach((node) => {
+  glTF_TREE.nodes.forEach((node) => {
     if (node.hasOwnProperty("camera")) {
       node.props = glTF_TREE.cameras[node.camera];
 
@@ -220,7 +220,7 @@ async function main() {
     gl.useProgram(shaderProgram);
     gl.bindVertexArray(vao);
 
-    glTF_TREE.RAW_nodesData.forEach((node) => {
+    glTF_TREE.nodes.forEach((node) => {
       if (node.hasOwnProperty("mesh")) {
         gl.bindBuffer(gl.ARRAY_BUFFER, node.r_buffersMesh.BUFFER_VERTEX);
         gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
