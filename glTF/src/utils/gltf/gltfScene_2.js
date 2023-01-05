@@ -1,170 +1,172 @@
 
-import * as glMatrix from  "../../glm/index.js";
+import * as glMatrix from "../../glm/index.js";
 import { NodeGLTF } from "../../utils/gltf/NodeGlTF.js";
 
-export class gltfScene{
-    constructor(gltf){
-      
-        this.gltf = JSON.parse(gltf);
-        this.nodes = this.gltf.nodes;
-        this.meshes = this.gltf.meshes;
-        this.cameras = this.gltf.cameras;
-        this.animations = this.gltf.animations;
-        this.accessors =  this.gltf.accessors;
-        this.bufferViews =  this.gltf.bufferViews;
-        this.buffers = this.gltf.buffers;
-        this.skins = this.gltf.skins;
+export class gltfScene {
+  constructor(gltf) {
 
-        this.RAW_MeshesData = [];
-        this.RAW_nodesData = [];
+    this.gltf = JSON.parse(gltf);
+    this.nodes = this.gltf.nodes;
+    this.meshes = this.gltf.meshes;
+    this.cameras = this.gltf.cameras;
+    this.animations = this.gltf.animations;
+    this.accessors = this.gltf.accessors;
+    this.bufferViews = this.gltf.bufferViews;
+    this.buffers = this.gltf.buffers;
+    this.skins = this.gltf.skins;
 
-         this.NodeGLTFarr = [];  
+    this.RAW_MeshesData = [];
+    this.RAW_nodesData = [];
 
-    }
+    this.NodeGLTFarr = [];
 
-
-    loadMesh(){
-      this.meshes.forEach((meshe) => {
-
-      });
-    }
+  }
 
 
-    loadScene(){
-      // let nodesData = [];
-      this.nodes.forEach((node, index) => {
-        node.index = index;
-        let nodeInst = new NodeGLTF(node);
-        this.NodeGLTFarr.push(nodeInst);
-      });
+  loadMesh() {
+    this.meshes.forEach((meshe) => {
 
-      //MESH Перебираем весь меш в сцене
-      let meshes = [];
-      let skins = [];
-      this.meshes.forEach((mesh) => {
+    });
+  }
+
+
+  loadScene() {
+    // let nodesData = [];
+    this.nodes.forEach((node, index) => {
+      node.index = index;
+      let nodeInst = new NodeGLTF(node);
+      this.NodeGLTFarr.push(nodeInst);
+    });
+
+    //MESH Перебираем весь меш в сцене
+    let meshes = [];
+    let skins = [];
+    this.meshes.forEach((mesh) => {
       // for (let index = 0; index < this.meshes.length; index++) {
       //   let mesh = this.meshes[index];
 
-        //Для каждого меша выбираем данные по примитивам Атрибутты и индексы.
-        mesh.primitives.forEach((primitive) => {
-          // ДАННЫЕ АКССЕСОРА По получиным данным смотрим в аксессор настойки вьюБуффера
-          mesh.dataINDEX = this.dataFromAccessors(primitive.indices);
-          let attributes = primitive.attributes;
-          for (let attribut in primitive.attributes) {
-            switch (attribut) {
-              case "POSITION":
-                mesh.dataPOSITION = this.dataFromAccessors(attributes.POSITION);
-                break;
-              case "NORMAL":
-                mesh.dataNORMAL = this.dataFromAccessors(attributes.NORMAL);
-                break;
-              case "TEXCOORD_0":
-                mesh.dataTEXCOORD_0 = this.dataFromAccessors(
-                  attributes.TEXCOORD_0
-                );
-                break;
-              case "JOINTS_0":
-                mesh.dataJOINTS_0 = this.dataFromAccessors(attributes.JOINTS_0);
-                break;
-              case "WEIGHTS_0":
-                mesh.dataWEIGHTS_0 = this.dataFromAccessors(
-                  attributes.WEIGHTS_0
-                );
-                break;
-              default:
-                break;
-            }
+      //Для каждого меша выбираем данные по примитивам Атрибутты и индексы.
+      mesh.primitives.forEach((primitive) => {
+        // ДАННЫЕ АКССЕСОРА По получиным данным смотрим в аксессор настойки вьюБуффера
+        mesh.dataINDEX = this.dataFromAccessors(primitive.indices);
+        let attributes = primitive.attributes;
+        for (let attribut in primitive.attributes) {
+          switch (attribut) {
+            case "POSITION":
+              mesh.dataPOSITION = this.dataFromAccessors(attributes.POSITION);
+              break;
+            case "NORMAL":
+              mesh.dataNORMAL = this.dataFromAccessors(attributes.NORMAL);
+              break;
+            case "TEXCOORD_0":
+              mesh.dataTEXCOORD_0 = this.dataFromAccessors(
+                attributes.TEXCOORD_0
+              );
+              break;
+            case "JOINTS_0":
+              mesh.dataJOINTS_0 = this.dataFromAccessors(attributes.JOINTS_0);
+              break;
+            case "WEIGHTS_0":
+              mesh.dataWEIGHTS_0 = this.dataFromAccessors(
+                attributes.WEIGHTS_0
+              );
+              break;
+            default:
+              break;
           }
+        }
 
-          if (primitive.hasOwnProperty("targets")) {
-            primitive.targets.forEach((targets) => {
-              for (let target in targets) {
-                switch (target) {
-                  case "POSITION":
-                    targets.dataPOSITION = this.dataFromAccessors(
-                      targets.POSITION
-                    );
-                    break;
-                  case "NORMAL":
-                    targets.dataNORMAL = this.dataFromAccessors(targets.NORMAL);
-                    break;
-                  case "TEXCOORD_0":
-                    targets.dataTEXCOORD_0 = this.dataFromAccessors(
-                      targets.TEXCOORD_0
-                    );
-                    break;
-                  case "JOINTS_0":
-                    targets.dataJOINTS_0 = this.dataFromAccessors(
-                      targets.NORMAL
-                    );
-                    break;
-                  case "WEIGHTS_0":
-                    targets.dataWEIGHTS_0 = this.dataFromAccessors(
-                      targets.WEIGHTS_0
-                    );
-                    break;
-                  default:
-                    break;
-                }
+        if (primitive.hasOwnProperty("targets")) {
+          primitive.targets.forEach((targets) => {
+            for (let target in targets) {
+              switch (target) {
+                case "POSITION":
+                  targets.dataPOSITION = this.dataFromAccessors(
+                    targets.POSITION
+                  );
+                  break;
+                case "NORMAL":
+                  targets.dataNORMAL = this.dataFromAccessors(targets.NORMAL);
+                  break;
+                case "TEXCOORD_0":
+                  targets.dataTEXCOORD_0 = this.dataFromAccessors(
+                    targets.TEXCOORD_0
+                  );
+                  break;
+                case "JOINTS_0":
+                  targets.dataJOINTS_0 = this.dataFromAccessors(
+                    targets.NORMAL
+                  );
+                  break;
+                case "WEIGHTS_0":
+                  targets.dataWEIGHTS_0 = this.dataFromAccessors(
+                    targets.WEIGHTS_0
+                  );
+                  break;
+                default:
+                  break;
               }
-            });
-          }
-        });
-
-        meshes.push(mesh);
-      })
-     // this.RAW_MeshesData = meshes;
-
-      //AMINATION
-      //  samplers данные анимации
-      //  input - кадры  output - значение кадров // interpolation - метод перехода между кадрами
-
-      //  channels - канал анимации
-      //  sampler - какой семл с данными анимации использовать
-      //  target - цель анимации // node и path - действие (перемешение маштаб поворот)
-      if (this.animations) {
-        this.animations.forEach((animation) => {
-          animation.channels.forEach((channel) => {});
-
-          animation.samplers.forEach((sampler) => {
-            sampler.inputRAW = this.dataFromAccessors(sampler.input);
-            sampler.outputRAW = this.dataFromAccessors(sampler.output);
+            }
           });
+        }
+      });
+
+      meshes.push(mesh);
+    })
+    // this.RAW_MeshesData = meshes;
+
+    //AMINATION
+    //  samplers данные анимации
+    //  input - кадры  output - значение кадров // interpolation - метод перехода между кадрами
+
+    //  channels - канал анимации
+    //  sampler - какой семл с данными анимации использовать
+    //  target - цель анимации // node и path - действие (перемешение маштаб поворот)
+    if (this.animations) {
+      this.animations.forEach((animation) => {
+        animation.channels.forEach((channel) => { });
+
+        animation.samplers.forEach((sampler) => {
+          sampler.inputRAW = this.dataFromAccessors(sampler.input);
+          sampler.outputRAW = this.dataFromAccessors(sampler.output);
         });
-      }
-
-      // if(this.cameras){
-      //    this.cameras.forEach((camera) => {
-
-      //     camera.type = this.cameras[camera.camera];
-
-      //    })
-      // }
-
-      if (this.skins) { 
-
-          this.skins.forEach((skin) => {
-                      for (let skinProps in skin)
-                      {
-                          switch (skinProps) {
-                            case "inverseBindMatrices":
-                              skin.datainverseBindMatrices = this.dataFromAccessors(
-                                skin.inverseBindMatrices
-                              );
-                              break;
-                            case "joints":
-                              skin.datajoints = skin.joints;
-                              break;  
-                              default:
-                              break;}}});
-      }
-       
+      });
     }
-  
-    dataFromAccessors(index_of_accessor) {
-   
-    let accessors_DATA = this.accessors[index_of_accessor]; 
-    let bufferViews_DATA= this.bufferViews[accessors_DATA.bufferView];
+
+    // if(this.cameras){
+    //    this.cameras.forEach((camera) => {
+
+    //     camera.type = this.cameras[camera.camera];
+
+    //    })
+    // }
+
+    if (this.skins) {
+
+      this.skins.forEach((skin) => {
+        for (let skinProps in skin) {
+          switch (skinProps) {
+            case "inverseBindMatrices":
+              skin.datainverseBindMatrices = this.dataFromAccessors(
+                skin.inverseBindMatrices
+              );
+              break;
+            case "joints":
+              skin.datajoints = skin.joints;
+              break;
+            default:
+              break;
+          }
+        }
+      });
+    }
+
+  }
+
+  dataFromAccessors(index_of_accessor) {
+
+    let accessors_DATA = this.accessors[index_of_accessor];
+    let bufferViews_DATA = this.bufferViews[accessors_DATA.bufferView];
 
     let buffer_STRING = this.buffers[bufferViews_DATA.buffer];
     let bufferRAW = buffer_STRING.uri.split(",");
@@ -172,10 +174,10 @@ export class gltfScene{
     let byteOffset = 0;
     if ("byteOffset" in bufferViews_DATA) {
       byteOffset = byteOffset + bufferViews_DATA.byteOffset;
-    } 
-    if("byteOffset" in accessors_DATA) {
-       byteOffset = byteOffset + accessors_DATA.byteOffset;
-    }    
+    }
+    if ("byteOffset" in accessors_DATA) {
+      byteOffset = byteOffset + accessors_DATA.byteOffset;
+    }
 
     let byteStride = 0;
     if ("byteStride" in bufferViews_DATA) {
@@ -183,7 +185,7 @@ export class gltfScene{
     }
     if ("byteStride" in accessors_DATA) {
       byteStride = accessors_DATA.byteStride;
-    }    
+    }
 
     let buffer_DATA = decoder64forWebGl(
       bufferRAW[1],
@@ -193,196 +195,196 @@ export class gltfScene{
       accessors_DATA.count,
       accessors_DATA.componentType,
       byteStride
-    );  
+    );
 
-     //spare
-     this.dataFromSpare(accessors_DATA,buffer_DATA);
-    
-     return {buffer_DATA,accessors_DATA};
+    //spare
+    this.dataFromSpare(accessors_DATA, buffer_DATA);
 
-} 
+    return { buffer_DATA, accessors_DATA };
 
-    dataFromSpare(accessors_DATA,buffer_DATA){
-        
-        if(accessors_DATA.hasOwnProperty('sparse')){
-            let sparse = accessors_DATA.sparse;
-            // sparse.count;
-            // sparse.indices;
-            // sparse.values;
-            let bufferViews_indices = this.bufferViews[sparse.indices.bufferView];
-            let bufferViews_values = this.bufferViews[sparse.values.bufferView];
-            let bufferViews_DATA = this.bufferViews[accessors_DATA.bufferView];
-            let buffer_STRING = this.buffers[bufferViews_DATA.buffer];
-            let bufferRAW = buffer_STRING.uri.split(",");
-    
-            let sparse_indices_DATA = decoder64forWebGl(
-                bufferRAW[1],
-                "SCALAR", //"VEC3",
-                bufferViews_indices.byteOffset,
-                bufferViews_indices.byteLength,
-                sparse.count,
-                sparse.indices.componentType
-              );  
-    
-            let sparse_values_DATA = decoder64forWebGl(
-                bufferRAW[1],
-                accessors_DATA.type, //"VEC3",
-                bufferViews_values.byteOffset,
-                bufferViews_values.byteLength,
-                sparse.count,
-                accessors_DATA.componentType
-             );  
-         
-             let typeCount = 0;
-             if(accessors_DATA.type =  "VEC3"){
-                typeCount = 3;
-             }
-    
-             for (let index = 0; index < sparse_indices_DATA.length; index++) {
-                let indexVertex = sparse_indices_DATA[index];
-                
-                for (let indexTypeCount = 0; indexTypeCount < typeCount; indexTypeCount++) {
-                    buffer_DATA[indexVertex*typeCount+indexTypeCount] = sparse_values_DATA[index*typeCount+indexTypeCount];  
-                    buffer_DATA[indexVertex*typeCount+indexTypeCount] = sparse_values_DATA[index*typeCount+indexTypeCount]; 
-                    buffer_DATA[indexVertex*typeCount+indexTypeCount] = sparse_values_DATA[index*typeCount+indexTypeCount];               
-                }
-            }
+  }
 
+  dataFromSpare(accessors_DATA, buffer_DATA) {
 
+    if (accessors_DATA.hasOwnProperty('sparse')) {
+      let sparse = accessors_DATA.sparse;
+      // sparse.count;
+      // sparse.indices;
+      // sparse.values;
+      let bufferViews_indices = this.bufferViews[sparse.indices.bufferView];
+      let bufferViews_values = this.bufferViews[sparse.values.bufferView];
+      let bufferViews_DATA = this.bufferViews[accessors_DATA.bufferView];
+      let buffer_STRING = this.buffers[bufferViews_DATA.buffer];
+      let bufferRAW = buffer_STRING.uri.split(",");
+
+      let sparse_indices_DATA = decoder64forWebGl(
+        bufferRAW[1],
+        "SCALAR", //"VEC3",
+        bufferViews_indices.byteOffset,
+        bufferViews_indices.byteLength,
+        sparse.count,
+        sparse.indices.componentType
+      );
+
+      let sparse_values_DATA = decoder64forWebGl(
+        bufferRAW[1],
+        accessors_DATA.type, //"VEC3",
+        bufferViews_values.byteOffset,
+        bufferViews_values.byteLength,
+        sparse.count,
+        accessors_DATA.componentType
+      );
+
+      let typeCount = 0;
+      if (accessors_DATA.type = "VEC3") {
+        typeCount = 3;
+      }
+
+      for (let index = 0; index < sparse_indices_DATA.length; index++) {
+        let indexVertex = sparse_indices_DATA[index];
+
+        for (let indexTypeCount = 0; indexTypeCount < typeCount; indexTypeCount++) {
+          buffer_DATA[indexVertex * typeCount + indexTypeCount] = sparse_values_DATA[index * typeCount + indexTypeCount];
+          buffer_DATA[indexVertex * typeCount + indexTypeCount] = sparse_values_DATA[index * typeCount + indexTypeCount];
+          buffer_DATA[indexVertex * typeCount + indexTypeCount] = sparse_values_DATA[index * typeCount + indexTypeCount];
         }
-    }
+      }
 
-    animationFrame(channel,startTime,curentTime,animationScale){
-           
-        let samplerIndex = channel.sampler;
-        let samplerDATA = this.animations[0].samplers[samplerIndex];
-
-        let animationLength =  samplerDATA.inputRAW.accessors_DATA.max - samplerDATA.inputRAW.accessors_DATA.min; 
-              
-        animationLength = animationLength * animationScale;
-
-        let animationСurentTime = (curentTime%(animationLength * 1000))/1000;
-        // console.log(animationСurentTime)
-        //Ишем смежные кадры анимации 
-        let frameIN = 0;
-        let frameOUT = samplerDATA.inputRAW.buffer_DATA[samplerDATA.inputRAW.buffer_DATA.length-1];
-        let frameIN_index = 0;
-        let frameOUT_index = samplerDATA.inputRAW.buffer_DATA.length-1;
-       
-        samplerDATA.inputRAW.buffer_DATA.forEach((element,index) => {
-
-          if(element*animationScale <= animationСurentTime){
-            if(element*animationScale > frameIN*animationScale){
-               frameIN = element;
-               frameIN_index = index;
-            }           
-          }
-          
-          if(element*animationScale >= animationСurentTime){
-            if(element*animationScale<frameOUT*animationScale){
-              frameOUT = element;
-              frameOUT_index = index;
-            }   
-          }
-
-        });
-      
-        let interpolationValue = 0;
-        if(animationСurentTime != 0){
-          interpolationValue = (animationСurentTime - frameIN*animationScale) / ((frameOUT - frameIN)*animationScale);
-        }
-         
-        
-        let  outRotation = glMatrix.quat.create();
-        let  a =  glMatrix.quat.create();
-          glMatrix.quat.set(a,
-          samplerDATA.outputRAW.buffer_DATA[frameIN_index * 4+0],
-          samplerDATA.outputRAW.buffer_DATA[frameIN_index * 4+1],
-          samplerDATA.outputRAW.buffer_DATA[frameIN_index * 4+2],
-          samplerDATA.outputRAW.buffer_DATA[frameIN_index * 4+3]        
-          );
-
-        let  b = glMatrix.quat.create();
-          glMatrix.quat.set(b,
-          samplerDATA.outputRAW.buffer_DATA[frameOUT_index*4+0],
-          samplerDATA.outputRAW.buffer_DATA[frameOUT_index*4+1],
-          samplerDATA.outputRAW.buffer_DATA[frameOUT_index*4+2],
-          samplerDATA.outputRAW.buffer_DATA[frameOUT_index*4+3]        
-          );
-
-        glMatrix.quat.slerp(outRotation, a, b, interpolationValue);
-
-        return outRotation;
 
     }
+  }
 
-    animationMorpth(channel,startTime,curentTime,animationScale){
-           
-        let samplerIndex = channel.sampler;
-        let samplerDATA = this.animations[0].samplers[samplerIndex];
+  animationFrame(channel, startTime, curentTime, animationScale) {
 
-        let animationLength =  samplerDATA.inputRAW.accessors_DATA.max - samplerDATA.inputRAW.accessors_DATA.min; 
-              
-        animationLength = animationLength * animationScale;
+    let samplerIndex = channel.sampler;
+    let samplerDATA = this.animations[0].samplers[samplerIndex];
 
-        let animationСurentTime = (curentTime%(animationLength * 1000))/1000;
-       // console.log(animationСurentTime)
-        //Ишем кадо смежные кадры анимации 
-        let frameIN = 0;
-        let frameOUT = samplerDATA.inputRAW.buffer_DATA[samplerDATA.inputRAW.buffer_DATA.length-1];
-        let frameIN_index = 0;
-        let frameOUT_index = samplerDATA.inputRAW.buffer_DATA.length-1;
-       
-        samplerDATA.inputRAW.buffer_DATA.forEach((element,index) => {
+    let animationLength = samplerDATA.inputRAW.accessors_DATA.max - samplerDATA.inputRAW.accessors_DATA.min;
 
-          if(element*animationScale <= animationСurentTime){
-            if(element*animationScale > frameIN*animationScale){
-               frameIN = element;
-               frameIN_index = index;
-            }           
-          }
-          
-          if(element*animationScale >= animationСurentTime){
-            if(element*animationScale<frameOUT*animationScale){
-              frameOUT = element;
-              frameOUT_index = index;
-            }   
-          }
+    animationLength = animationLength * animationScale;
 
-         });
-      
-        let interpolationValue = 0;
-        if(animationСurentTime != 0){
-          interpolationValue = (animationСurentTime - frameIN*animationScale) / ((frameOUT - frameIN)*animationScale);
+    let animationСurentTime = (curentTime % (animationLength * 1000)) / 1000;
+    // console.log(animationСurentTime)
+    //Ишем смежные кадры анимации 
+    let frameIN = 0;
+    let frameOUT = samplerDATA.inputRAW.buffer_DATA[samplerDATA.inputRAW.buffer_DATA.length - 1];
+    let frameIN_index = 0;
+    let frameOUT_index = samplerDATA.inputRAW.buffer_DATA.length - 1;
+
+    samplerDATA.inputRAW.buffer_DATA.forEach((element, index) => {
+
+      if (element * animationScale <= animationСurentTime) {
+        if (element * animationScale > frameIN * animationScale) {
+          frameIN = element;
+          frameIN_index = index;
         }
+      }
 
-        // interpolationValue = (currentTime - previousTime) / (nextTime - previousTime)
-        //            = (1.2 - 0.8) / (1.6 - 0.8)
-        //            = 0.4 / 0.8         
-        //            = 0.5
-        
-        let t1 =
-          (samplerDATA.outputRAW.buffer_DATA[frameOUT_index * 2] -
-            samplerDATA.outputRAW.buffer_DATA[frameIN_index * 2]) *
-            interpolationValue +
-          samplerDATA.outputRAW.buffer_DATA[frameIN_index * 2];
+      if (element * animationScale >= animationСurentTime) {
+        if (element * animationScale < frameOUT * animationScale) {
+          frameOUT = element;
+          frameOUT_index = index;
+        }
+      }
 
-        let t2 =
-          (samplerDATA.outputRAW.buffer_DATA[frameOUT_index * 2 + 1] -
-            samplerDATA.outputRAW.buffer_DATA[frameIN_index * 2 + 1]) *
-            interpolationValue +
-          samplerDATA.outputRAW.buffer_DATA[frameIN_index * 2 + 1];  
+    });
 
-
-     
-       return [t1, t2];
-
+    let interpolationValue = 0;
+    if (animationСurentTime != 0) {
+      interpolationValue = (animationСurentTime - frameIN * animationScale) / ((frameOUT - frameIN) * animationScale);
     }
+
+
+    let outRotation = glMatrix.quat.create();
+    let a = glMatrix.quat.create();
+    glMatrix.quat.set(a,
+      samplerDATA.outputRAW.buffer_DATA[frameIN_index * 4 + 0],
+      samplerDATA.outputRAW.buffer_DATA[frameIN_index * 4 + 1],
+      samplerDATA.outputRAW.buffer_DATA[frameIN_index * 4 + 2],
+      samplerDATA.outputRAW.buffer_DATA[frameIN_index * 4 + 3]
+    );
+
+    let b = glMatrix.quat.create();
+    glMatrix.quat.set(b,
+      samplerDATA.outputRAW.buffer_DATA[frameOUT_index * 4 + 0],
+      samplerDATA.outputRAW.buffer_DATA[frameOUT_index * 4 + 1],
+      samplerDATA.outputRAW.buffer_DATA[frameOUT_index * 4 + 2],
+      samplerDATA.outputRAW.buffer_DATA[frameOUT_index * 4 + 3]
+    );
+
+    glMatrix.quat.slerp(outRotation, a, b, interpolationValue);
+
+    return outRotation;
+
+  }
+
+  animationMorpth(channel, startTime, curentTime, animationScale) {
+
+    let samplerIndex = channel.sampler;
+    let samplerDATA = this.animations[0].samplers[samplerIndex];
+
+    let animationLength = samplerDATA.inputRAW.accessors_DATA.max - samplerDATA.inputRAW.accessors_DATA.min;
+
+    animationLength = animationLength * animationScale;
+
+    let animationСurentTime = (curentTime % (animationLength * 1000)) / 1000;
+    // console.log(animationСurentTime)
+    //Ишем кадо смежные кадры анимации 
+    let frameIN = 0;
+    let frameOUT = samplerDATA.inputRAW.buffer_DATA[samplerDATA.inputRAW.buffer_DATA.length - 1];
+    let frameIN_index = 0;
+    let frameOUT_index = samplerDATA.inputRAW.buffer_DATA.length - 1;
+
+    samplerDATA.inputRAW.buffer_DATA.forEach((element, index) => {
+
+      if (element * animationScale <= animationСurentTime) {
+        if (element * animationScale > frameIN * animationScale) {
+          frameIN = element;
+          frameIN_index = index;
+        }
+      }
+
+      if (element * animationScale >= animationСurentTime) {
+        if (element * animationScale < frameOUT * animationScale) {
+          frameOUT = element;
+          frameOUT_index = index;
+        }
+      }
+
+    });
+
+    let interpolationValue = 0;
+    if (animationСurentTime != 0) {
+      interpolationValue = (animationСurentTime - frameIN * animationScale) / ((frameOUT - frameIN) * animationScale);
+    }
+
+    // interpolationValue = (currentTime - previousTime) / (nextTime - previousTime)
+    //            = (1.2 - 0.8) / (1.6 - 0.8)
+    //            = 0.4 / 0.8         
+    //            = 0.5
+
+    let t1 =
+      (samplerDATA.outputRAW.buffer_DATA[frameOUT_index * 2] -
+        samplerDATA.outputRAW.buffer_DATA[frameIN_index * 2]) *
+      interpolationValue +
+      samplerDATA.outputRAW.buffer_DATA[frameIN_index * 2];
+
+    let t2 =
+      (samplerDATA.outputRAW.buffer_DATA[frameOUT_index * 2 + 1] -
+        samplerDATA.outputRAW.buffer_DATA[frameIN_index * 2 + 1]) *
+      interpolationValue +
+      samplerDATA.outputRAW.buffer_DATA[frameIN_index * 2 + 1];
+
+
+
+    return [t1, t2];
+
+  }
 
 }
 
 
-function decoder64forWebGl(str, type, byteOffset, byteLength, count,componentType,byteStride=0) {
+function decoder64forWebGl(str, type, byteOffset, byteLength, count, componentType, byteStride = 0) {
   // 5120 (BYTE)	1
   // 5121(UNSIGNED_BYTE)	1
   // 5122 (SHORT)	2
@@ -492,7 +494,7 @@ function decoder64forWebGl(str, type, byteOffset, byteLength, count,componentTyp
   // console.log("fAry  = " + fAry);
   return fAry;
 }
- 
+
 export function _base64ToArrayBuffer(base64) {
   var binary_string = window.atob(base64);
   var len = binary_string.length;

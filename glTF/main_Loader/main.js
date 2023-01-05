@@ -111,9 +111,11 @@ async function main() {
   // let glTF = await LoadJSONUsingPromise("../resource/gltf/morpth.gltf");
   // let glTF = await LoadJSONUsingPromise("../resource/gltf/minimal.gltf");
   // let glTF = await LoadJSONUsingPromise("../resource/gltf/simple_Meshes.gltf");
-  // let glTF = await LoadJSONUsingPromise("../resource/gltf/killer_whale/orca.gltf");
-  // let glTF = await LoadJSONUsingPromise("../resource/gltf/skin.gltf");
-  let glTF = await LoadJSONUsingPromise("../resource/gltf/fox.gltf");
+  //let glTF = await LoadJSONUsingPromise("../resource/gltf/killer_whale/orca.gltf");
+  //let glTF = await LoadJSONUsingPromise("../resource/gltf/skin.gltf");
+  //let glTF = await LoadJSONUsingPromise("../resource/gltf/rig.gltf");
+  let glTF = await LoadJSONUsingPromise("../resource/gltf/rigHuman2.gltf");
+  //let glTF = await LoadJSONUsingPromise("../resource/gltf/fox.gltf");
   let glTF_TREE = await new gltfScene(glTF);
   glTF_TREE.loadScene();
   //  let base64STR =
@@ -155,7 +157,21 @@ async function main() {
     }
   });
 
+  let Buffer_JOINT = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, Buffer_JOINT);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([0,0,0]),
+    gl.STATIC_DRAW
+  );
 
+  let Buffer_JOINT_FACES = gl.createBuffer();
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Buffer_JOINT_FACES);
+      gl.bufferData(
+        gl.ELEMENT_ARRAY_BUFFER,
+        new Int16Array([0]),
+        gl.STATIC_DRAW
+      );
 
   gl.bindVertexArray(null);
 
@@ -289,12 +305,33 @@ async function main() {
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, node.Buffer_FACES);
         gl.drawElements(
-          gl.TRIANGLES,
+          gl.LINES,
           glTF_TREE.meshes[node.mesh].dataINDEX.accessors_DATA.count,
           gl.UNSIGNED_SHORT,
           0
         );
       }
+    });
+    
+
+    glTF_TREE.skins.forEach((skin) => {
+      gl.uniform3fv(u_Color, [0.0, 0.5, 0.9]);
+      skin.joints.forEach((nodeIndex)=>{
+        const node = glTF_TREE.NodeGLTFarr[nodeIndex];
+        gl.uniformMatrix4fv(u_mMatrix, false, node.getMatrix());
+
+        //BUFFER
+        gl.bindBuffer(gl.ARRAY_BUFFER, Buffer_JOINT);
+        gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0); 
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Buffer_JOINT_FACES);
+        gl.drawElements(
+          gl.POINTS,
+          1,
+          gl.UNSIGNED_SHORT,
+          0
+        );
+      })
     });
 
     //BUFFER

@@ -27,8 +27,8 @@ export class NodeGLTF {
   }
 
   getMatrix(){
-   this.updateWorldMatrix(this.parent);
-   return this.worldMatrix;
+    this.updateWorldMatrix(this.parent);
+    return this.worldMatrix;
   }
 
   TRS(translation, rotation, scale) {
@@ -62,16 +62,16 @@ export class NodeGLTF {
     if(parentWorldMatrix){
         //Есл иматрица родителя передана то умнодаем ее на локальную матрицу 
         //и записываем в нашу мировую матрицу
-       glMatrix.mat4.multiply(this.worldMatrix, parentWorldMatrix,this.localMatrix); 
+        glMatrix.mat4.multiply(this.worldMatrix, parentWorldMatrix,this.localMatrix); 
     }else{
        // иначе просто комируем локальную матрицу в нашу мировую 
-       glMatrix.mat4.copy(this.worldMatrix,this.localMatrix); 
+        glMatrix.mat4.copy(this.worldMatrix,this.localMatrix); 
     }    
     
     //обрабатываем для всез потомков
     const worldMatrix = this.worldMatrix;
     for (const child of this.children) {
-     child.updateWorldMatrix(worldMatrix);
+      child.updateWorldMatrix(worldMatrix);
     }
 
   }
